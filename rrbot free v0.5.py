@@ -17,7 +17,23 @@ class Botclass():
         self.version = "v0.5"
         self.skillmethodes = ["Strenght","Education","Endurance","Equal"]
         self.BotLoop()
+        
+        #THis calls all the methodes
+    def BotLoop(self):
+        self.Ui()
+        self.variables()
+        self.Driver()
+        self.Login(self.loginmethod)
+        while True:
+            print("Starting Run")
+            self.update_account_data()
+            self.print_account_data()
+            self.go_skill()
+            self.update_account_data()
+            self.print_account_data()
+            self.Pause()
 
+            #UI to get account data and what to skill etc
     def Ui(self):
         print("Hello and Welcome to the RR Bot free version ",self.version)
         print("This is the free version of the RRBot. It only includes Auto Perk/Skill")
@@ -78,20 +94,7 @@ class Botclass():
         print("Starting with the Bot")
         return True
 
-    def BotLoop(self):
-        self.Ui()
-        self.variables()
-        self.Driver()
-        self.Login(self.loginmethod)
-        while True:
-            print("Starting Run")
-            self.update_account_data()
-            self.print_account_data()
-            self.go_skill()
-            self.update_account_data()
-            self.print_account_data()
-            self.Pause()
-
+    #unnessescary Def to set some variables, may add it into __init__?
     def variables(self):
         print("Setting Variables")
         self.url = "https://rivalregions.com/"
@@ -102,11 +105,13 @@ class Botclass():
                              }
         return True
 
+    #starting the chromedriver
     def Driver(self):
         print("Initialing Driver")
         chrome_options = selenium.webdriver.chrome.options.Options()
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument('--no-sandbox')
+        #remove headless to see the driver working and to see xpath etc, thn add it so the bot can run without a chrometab open
         chrome_options.add_argument('--headless')
         chrome_options.add_argument(f'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.3945.79 Safari/537.36')
 
@@ -114,6 +119,8 @@ class Botclass():
         self.driver.get(self.url)
         return True
 
+        #Login method, loggin into the rivalregions account
+        #Google not working, Facebook has to accept cookies i think
     def Login(self, loginmethod):
         print("Starting Login")
         if loginmethod == "google":
@@ -154,6 +161,7 @@ class Botclass():
         else:
             sys.exit()
 
+        #getting all the account information
     def update_account_data(self):
         print("Getting Account Data")
         self.driver.find_element_by_xpath('//*[@id="header_menu"]/div[5]').click()
@@ -183,11 +191,13 @@ class Botclass():
         except:
             self.account_data["General"]["RemainingSkillTime"] = "00:00"
 
+            #just a function to print the account data to the user
     def print_account_data(self):
         print("Account data:")
         print("Skills:",self.account_data["Skills"])
         return True
 
+    #skilling the thing which needs to be skilled
     def go_skill(self):
         if not self.account_data["General"]["RemainingSkillTime"] == "00:00":
             print("Still skilling. Remaining:",self.account_data["General"]["RemainingSkillTime"])
@@ -231,6 +241,7 @@ class Botclass():
             s.close()
         return True
 
+    #getting how long the skilltime is, then merging it into seconds so itll wait untill the slkill is finished to start again
     def Pause(self):
 
         # how many digits
